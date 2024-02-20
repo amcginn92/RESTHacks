@@ -59,8 +59,9 @@ app.post('/interactions', async function (req, res) {
         data: {
           // Fetches a random emoji to send from a helper function
           content: await getUpcomingDueDates()
-              .then(eventName => {
-                return `Returned Event Name: ${eventName}`;
+              .then(event => {
+                return `Event in the next 3 days:\nReturned Event Name: ${event.event_name}\nReturned Event Name: ${event.event_date}`
+                + `\nReturned Event Name: ${event.event_description}`;
               })
               .catch(error => {
                 console.error('Error:', error);

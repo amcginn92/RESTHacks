@@ -21,17 +21,44 @@ export function getUpcomingDueDates() {
         .then(data => {
           const events = data.events || [];
 
-          if (events.length > 0) {
-            // Assuming you want the name of the first event in the array
-            const firstEvent = events[0];
-            const eventName = firstEvent.event_name;
+          // Create an array to store event information
+          const eventInfoArray = [];
 
-            console.log(`Event Name: ${eventName}`);
-            resolve(eventName);
-          } else {
-            console.log('No upcoming events.');
-            resolve(null);
-          }
+          events.forEach(event => {
+            const eventId = event.id;
+            const eventName = event.event_name;
+            const eventDescription = event.event_description;
+            const eventDate = event.event_date;
+
+
+            // Log the event information
+            // console.log(`Event ID: ${eventId}`);
+            // console.log(`Event Name: ${eventName}`);
+            // console.log(`Event Description: ${eventDescription}`);
+            // console.log(`Event Date: ${eventDate}`);
+            // console.log('\n');
+
+            // Push event information to the array
+            eventInfoArray.push({
+              id: eventId,
+              name: eventName,
+              description: eventDescription,
+              date: eventDate
+            });
+            const dateToCheck = "2024-04-22";
+            const numberOfDays = 3; // Change this value based on your requirement
+
+            if (isDateInNextDays(eventDate, numberOfDays)) {
+              console.log(`${dateToCheck} is in the next ${numberOfDays} days.`);
+              resolve(event);
+            } else {
+              // console.log(`${dateToCheck} is not in the next ${numberOfDays} days.`);
+            }
+
+          });
+
+          // Resolve with the array of event information
+          // resolve(eventInfoArray);
         })
         .catch(error => {
           console.error('Error:', error);
@@ -39,6 +66,24 @@ export function getUpcomingDueDates() {
         });
   });
 }
+function isDateInNextDays(dateString, numberOfDays) {
+  // Parse the input date string into a Date object
+  const inputDate = new Date(dateString);
+
+  // Get the current date
+  const currentDate = new Date();
+
+  // Calculate the difference in milliseconds between the input date and the current date
+  const timeDifference = inputDate - currentDate;
+
+  // Calculate the difference in days
+  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+  // Check if the date is within the specified number of days from the current date
+  return daysDifference >= 0 && daysDifference <= numberOfDays;
+}
+
+
 export function getResult(p1, p2) {
   let gameResult;
   if (RPSChoices[p1.objectName] && RPSChoices[p1.objectName][p2.objectName]) {
