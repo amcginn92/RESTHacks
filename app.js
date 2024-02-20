@@ -8,7 +8,7 @@ import {
   ButtonStyleTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
-import { getShuffledOptions, getResult } from './game.js';
+import { getShuffledOptions, getResult, getUpcomingDueDates } from './game.js';
 
 // Create an express app
 const app = express();
@@ -41,14 +41,32 @@ app.post('/interactions', async function (req, res) {
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
 
-    // "test" command
-    if (name === 'test') {
+    // "tetris" command
+    if (name === 'tetris') {
       // Send a message into the channel where command was triggered from
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           // Fetches a random emoji to send from a helper function
-          content: 'hello world ' + getRandomEmoji(),
+          content: 'Beginning a game of multiplayer tetris... ' + getRandomEmoji(),
+        },
+      });
+    }
+    if (name === 'upcoming') {
+      // Send a message into the channel where command was triggered from
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          // Fetches a random emoji to send from a helper function
+          content: await getUpcomingDueDates()
+              .then(eventName => {
+                return `Returned Event Name: ${eventName}`;
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                // Handle the error as needed
+                return 'Error retrieving upcoming events.';
+              }),
         },
       });
     }

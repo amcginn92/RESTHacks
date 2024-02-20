@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { getRPSChoices } from './game.js';
 import { capitalize, InstallGlobalCommands } from './utils.js';
 
+
 // Get the game choices from game.js
 function createCommandChoices() {
   const choices = getRPSChoices();
@@ -19,7 +20,12 @@ function createCommandChoices() {
 
 // Simple test command
 const TEST_COMMAND = {
-  name: 'test',
+  name: 'tetris',
+  description: 'Basic command',
+  type: 1,
+};
+const UPCOMING_COMMAND = {
+  name: 'upcoming',
   description: 'Basic command',
   type: 1,
 };
@@ -40,6 +46,6 @@ const CHALLENGE_COMMAND = {
   type: 1,
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND, UPCOMING_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);

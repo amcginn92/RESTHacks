@@ -1,5 +1,44 @@
 import { capitalize } from './utils.js';
+import * as events from "events";
 
+// Get the upcoming due dates from syllabus API
+export function getUpcomingDueDates() {
+  const apiUrl = 'https://courses.ianapplebaum.com/api/syllabus/5'; // Replace '5' with the actual syllabus ID
+  const headers = {
+    'Authorization': 'Bearer z6xncUuPDynr7UATcVVa0vUjj4sLHzjdrB7zh6CO54fa4000',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  };
+
+  return new Promise((resolve, reject) => {
+    fetch(apiUrl, { headers })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const events = data.events || [];
+
+          if (events.length > 0) {
+            // Assuming you want the name of the first event in the array
+            const firstEvent = events[0];
+            const eventName = firstEvent.event_name;
+
+            console.log(`Event Name: ${eventName}`);
+            resolve(eventName);
+          } else {
+            console.log('No upcoming events.');
+            resolve(null);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          reject(error);
+        });
+  });
+}
 export function getResult(p1, p2) {
   let gameResult;
   if (RPSChoices[p1.objectName] && RPSChoices[p1.objectName][p2.objectName]) {
